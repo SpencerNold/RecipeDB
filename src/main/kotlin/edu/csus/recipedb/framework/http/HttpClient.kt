@@ -1,0 +1,39 @@
+package edu.csus.recipedb.framework.http
+
+import java.net.HttpURLConnection
+import java.net.URL
+
+class HttpClient {
+
+    fun sendRequest(request: HttpRequest): HttpResponse {
+        val link = "${request.url}?${getJoinedParameters(request.headers)}"
+        val connection = URL(link).openConnection() as HttpURLConnection
+        connection.requestMethod = request.method.name
+        for ((key, value) in request.parameters)
+            connection.setRequestProperty(key, value)
+        if (request.body.isNotEmpty()) {
+            connection.doOutput = true
+            val output = connection.outputStream
+            output.write(request.body)
+            output.flush()
+            output.close()
+        }
+        val code = connection.responseCode
+        val body = if (code == 204 || connection.contentLength == 0) {
+            ByteArray(0)
+        } else {
+            connection.inputStream.readAllBytes()
+        }
+        return HttpResponse(code, body)
+    }
+
+    private fun getJoinedParameters(parameters: Map<String, String>): String {
+        val array = arrayOfNulls<String>(parameters.size)
+        var index = 0
+        for ((key, value) in parameters) {
+            array[index] = "$key=$value"
+            index++
+        }
+        return array.joinToString("&")
+    }
+}
