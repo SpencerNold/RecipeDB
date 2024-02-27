@@ -1,14 +1,11 @@
 package edu.csus.recipedb.framework
 
 import edu.csus.recipedb.framework.handlers.Handler
-import edu.csus.recipedb.framework.logger.Logger
-import edu.csus.recipedb.framework.logger.SystemLogger
 import edu.csus.recipedb.framework.services.ControllerService
 import edu.csus.recipedb.framework.services.DatabaseService
 import edu.csus.recipedb.framework.services.Service
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.math.log
 
 abstract class WebServer(val port: Int) {
     abstract fun start()
@@ -17,10 +14,10 @@ abstract class WebServer(val port: Int) {
     abstract fun addHandler(path: String, handler: Handler)
     abstract fun getInternalServerObject(): Any
 
-    data class Builder(var protocol: Protocol, val port: Int, var services: Array<Class<*>> = arrayOf(), var executor: ExecutorService? = null, var logger: Logger? = Logger.getSystemLogger()) {
+    class Builder(var protocol: Protocol, val port: Int, var services: Array<Class<*>> = arrayOf(), var executor: ExecutorService? = null, var arguments: Array<String> = arrayOf()) {
         fun services(vararg services: Class<*>) = apply { this.services = arrayOf(*services) }
-        fun executor(executor: ExecutorService?) = apply { this.executor = executor }
-        fun logger(logger: Logger?) = apply { this.logger = logger }
+        fun executor(executor: ExecutorService) = apply { this.executor = executor }
+        fun arguments(arguments: Array<String>) = apply { this.arguments = arguments }
         fun build(): WebServer {
             return Factory(this).create()
         }

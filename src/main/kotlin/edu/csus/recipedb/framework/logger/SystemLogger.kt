@@ -6,7 +6,12 @@ import java.util.*
 class SystemLogger: Logger() {
 
     override fun log(severity: Severity, message: String) {
-        println("[${severity.name}: ${getDateTime()}] $message")
+        val print = "[${severity.name}: ${getDateTime()}] $message"
+        if (severity == Severity.ERROR) {
+            System.err.println(print)
+        } else {
+            println(print)
+        }
     }
 
     private fun getDateTime(): String {

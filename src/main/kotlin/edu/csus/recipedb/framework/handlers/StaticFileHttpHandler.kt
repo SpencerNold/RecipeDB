@@ -17,11 +17,16 @@ class StaticFileHttpHandler(private val bytes: ByteArray): Handler(), HttpHandle
             val bytes = if (method.parameterCount == 0) {
                 method.isAccessible = true
                 val response = method.invoke(instance)
-                val input = if (response is File) { FileInputStream(response) } else if (response is InputStream) { response } else { null }
-                if (input != null)
-                    input.readAllBytes()
-                else {
-                    logger.error("${method.name} in ${instance.javaClass.name} must return an InputStream or a File to be used as a static file handler")
+                if (response != null) {
+                    val input = if (response is File?) { FileInputStream(response) } else if (response is InputStream?) { response } else { null }
+                    if (input != null)
+                        input.readAllBytes()
+                    else {
+                        logger.error("${method.name} in ${instance.javaClass.name} must return an InputStream or a File to be used as a static file handler")
+                        ByteArray(0)
+                    }
+                } else {
+                    logger.error("${method.name} in ${instance.javaClass.name} returns a null page when it shouldn't")
                     ByteArray(0)
                 }
             } else {
