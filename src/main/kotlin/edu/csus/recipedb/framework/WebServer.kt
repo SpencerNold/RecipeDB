@@ -1,6 +1,7 @@
 package edu.csus.recipedb.framework
 
 import edu.csus.recipedb.framework.handlers.Handler
+import edu.csus.recipedb.framework.logger.Logger
 import edu.csus.recipedb.framework.services.ControllerService
 import edu.csus.recipedb.framework.services.DatabaseService
 import edu.csus.recipedb.framework.services.Service
@@ -13,8 +14,10 @@ abstract class WebServer(val port: Int) {
     abstract fun reload()
     abstract fun addHandler(path: String, handler: Handler)
     abstract fun getInternalServerObject(): Any
+    abstract fun register(service: Any)
+    abstract fun <T> service(clazz: Class<T>): T?
 
-    class Builder(var protocol: Protocol, val port: Int, var services: Array<Class<*>> = arrayOf(), var executor: ExecutorService? = null, var arguments: Array<String> = arrayOf()) {
+    class Builder(val protocol: Protocol, val port: Int, var services: Array<Class<*>> = arrayOf(), var executor: ExecutorService? = null, var arguments: Array<String> = arrayOf()) {
         fun services(vararg services: Class<*>) = apply { this.services = arrayOf(*services) }
         fun executor(executor: ExecutorService) = apply { this.executor = executor }
         fun arguments(arguments: Array<String>) = apply { this.arguments = arguments }
@@ -24,12 +27,15 @@ abstract class WebServer(val port: Int) {
     }
 
     private data class Factory(private val builder: Builder) {
+
+        private val logger = Logger.getSystemLogger()
+
         fun create(): WebServer {
             val server = when (builder.protocol) {
                 Protocol.HTTP -> HttpWebServerImpl(builder.port, builder.executor ?: Executors.newSingleThreadExecutor())
             }
             for (clazz in builder.services) {
-                if (clazz.isAnnotationPresent(Service.Controller::class.java)) {
+                val instance = if (clazz.isAnnotationPresent(Service.Controller::class.java)) {
                     val controller = clazz.getAnnotation(Service.Controller::class.java)
                     val service = ControllerService(clazz, controller)
                     service.start(server)
@@ -38,8 +44,11 @@ abstract class WebServer(val port: Int) {
                     val service = DatabaseService(clazz, database)
                     service.start(server)
                 } else {
-                    TODO("Throw an exception")
+                    logger.error("${clazz.name} must have a service annotation to be used as one")
+                    null
                 }
+                if (instance != null)
+                    server.register(instance)
             }
             return server
         }

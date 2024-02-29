@@ -15,4 +15,11 @@ dependencies {
 
 application {
 	mainClass = "edu.csus.recipedb.MainKt"
+	val args = arrayOf("mongodb.url", "mongodb.username", "mongodb.password")
+	val list = mutableListOf<String>()
+	for (k in args) {
+		val v = System.getProperty(k) ?: continue
+		list.add("-D$k=$v")
+	}
+	applicationDefaultJvmArgs = list
 }

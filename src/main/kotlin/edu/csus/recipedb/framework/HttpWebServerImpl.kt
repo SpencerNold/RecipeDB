@@ -12,14 +12,22 @@ class HttpWebServerImpl(port: Int, private val executor: ExecutorService): WebSe
     private val logger: Logger = Logger.getSystemLogger()
     private val server: HttpServer = HttpServer.create(InetSocketAddress(port), 0)
     private val handlers: MutableMap<String, Handler> = mutableMapOf()
+    private val services: MutableMap<Class<*>, Any> = mutableMapOf()
+    private var running: Boolean = false
 
     override fun start() {
+        if (running)
+            return
+        running = true
         logger.info("Starting server on port: $port")
         server.executor = executor
         server.start()
     }
 
     override fun stop() {
+        if (!running)
+            return
+        running = false
         logger.info("Shutting down server...")
         server.stop(0)
     }
@@ -29,7 +37,6 @@ class HttpWebServerImpl(port: Int, private val executor: ExecutorService): WebSe
     }
 
     override fun addHandler(path: String, handler: Handler) {
-        // TODO Check type of handler, log error if it is not an http handler
         if (handler !is HttpHandler) {
             logger.warn("Unable to create handler at path \"$path\"")
             return
@@ -41,5 +48,22 @@ class HttpWebServerImpl(port: Int, private val executor: ExecutorService): WebSe
 
     override fun getInternalServerObject(): Any {
         return server
+    }
+
+    override fun register(service: Any) {
+        services[service.javaClass] = service
+    }
+
+    override fun <T> service(clazz: Class<T>): T? {
+        val service = services[clazz]
+        return if (service == null) {
+            logger.error("no such service of type: ${clazz.name}")
+            null
+        } else if (!clazz.isInstance(service)) {
+            logger.error("no such service of type: ${clazz.name}")
+            null
+        } else {
+            clazz.cast(service)
+        }
     }
 }

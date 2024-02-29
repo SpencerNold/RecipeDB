@@ -8,13 +8,14 @@ import java.io.File
 
 class ControllerService(clazz: Class<*>, private val controller: Controller): Service(Type.CONTROLLER, clazz) {
 
-    override fun start(server: WebServer) {
+    override fun start(server: WebServer): Any? {
         val instance = try {
             clazz.getDeclaredConstructor().newInstance()
         } catch (e: NoSuchMethodException) {
             logger.error("Unable to start controller of class: ${clazz.name}")
-            return
+            return null
         }
+        implement(instance, server)
         for (method in clazz.declaredMethods) {
             if (method.isAnnotationPresent(Route::class.java)) {
                 val route = method.getAnnotation(Route::class.java)
@@ -27,5 +28,6 @@ class ControllerService(clazz: Class<*>, private val controller: Controller): Se
                 TODO("Not implemented yet!")
             }
         }
+        return instance
     }
 }

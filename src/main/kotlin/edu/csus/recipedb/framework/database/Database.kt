@@ -1,33 +1,18 @@
 package edu.csus.recipedb.framework.database
 
-import java.sql.Connection
+import edu.csus.recipedb.framework.services.Implementation
 
-abstract class Database {
+abstract class Database: Implementation() {
 
-    private var connection: Connection? = null
+    private var driver: Driver? = null
 
-    fun init(connection: Connection) {
-        connection.autoCommit = false
-        this.connection = connection
-    }
-
-    fun executePreparedStatement(statement: String, vararg objects: Any) {
-        if (connection != null) {
-            val stmt = connection!!.prepareStatement(statement)
-            for (i in objects.indices) {
-                val obj = objects[i]
-                val index = i+1
-                stmt.setObject(index, obj)
-            }
-            stmt.executeUpdate()
-            stmt.close()
-            connection!!.commit()
-        }
+    fun execute(statement: String) {
+        if (driver != null)
+            driver!!.execute(statement)
     }
 
     fun query(statement: String) {
-        if (connection != null) {
-            val stmt = connection!!.createStatement()
-        }
+        if (driver != null)
+            driver!!.execute(statement)
     }
 }
