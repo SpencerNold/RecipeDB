@@ -29,3 +29,5 @@ out/
 # Program
 /start.bat
 /start.sh
+/build.bat
+/build.sh

@@ -15,7 +15,8 @@ dependencies {
 
 application {
 	mainClass = "edu.csus.recipedb.MainKt"
-	val args = arrayOf("mongodb.url", "mongodb.username", "mongodb.password")
+	// passes these system properties from gradle to the JVM for the server
+	val args = arrayOf("spoonacular.key", "mongodb.url", "mongodb.username", "mongodb.password")
 	val list = mutableListOf<String>()
 	for (k in args) {
 		val v = System.getProperty(k) ?: continue
