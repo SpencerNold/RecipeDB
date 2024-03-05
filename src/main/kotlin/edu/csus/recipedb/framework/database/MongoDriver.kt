@@ -10,7 +10,7 @@ class MongoDriver(url: String, username: String, password: String): Driver(url, 
         TODO("Not implemented yet!")
     }
 
-    override fun query(statement: String) {
+    override fun query(statement: String): Query? {
         TODO("Not implemented yet!")
     }
 }

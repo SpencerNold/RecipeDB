@@ -4,7 +4,7 @@ abstract class Driver(protected val url: String, protected val username: String,
 
     abstract fun init()
     abstract fun execute(statement: String)
-    abstract fun query(statement: String)
+    abstract fun query(statement: String): Query?
 
     data class Factory(private val type: Type) {
         fun create(url: String, username: String, password: String): Driver {

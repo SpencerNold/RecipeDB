@@ -1,5 +1,6 @@
 package edu.csus.recipedb.services
 
+import edu.csus.recipedb.framework.Resource
 import edu.csus.recipedb.framework.Route
 import edu.csus.recipedb.framework.services.Implementation
 import edu.csus.recipedb.framework.services.Service
@@ -10,6 +11,6 @@ class RootController: Implementation() {
 
     @Route.File(path = "/")
     fun root(): InputStream? {
-        return javaClass.getResourceAsStream("/index.html")
+        return Resource.get("index.html")
     }
 }
