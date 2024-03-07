@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
 	implementation("com.google.code.gson:gson:2.10.1")
+	implementation("org.mongodb:mongodb-driver-sync:5.0.0")
 }
 
 application {

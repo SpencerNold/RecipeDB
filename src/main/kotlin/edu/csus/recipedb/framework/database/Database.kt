@@ -1,21 +1,15 @@
 package edu.csus.recipedb.framework.database
 
 import edu.csus.recipedb.framework.annotation.Instantiated
-import edu.csus.recipedb.framework.services.Implementation
 
-abstract class Database: Implementation() {
+abstract class Database {
 
     @Instantiated
     private var driver: Driver? = null
 
-    fun execute(statement: String) {
-        if (driver != null)
-            driver!!.execute(statement)
-    }
+    abstract fun open()
 
-    fun query(statement: String): Query? {
-        if (driver != null)
-            return driver!!.query(statement)
-        return null
+    protected fun <T> getDriver(driver: Class<T>): T {
+        return driver.cast(this.driver!!)
     }
 }

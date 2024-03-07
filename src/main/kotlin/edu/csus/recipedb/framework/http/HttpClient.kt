@@ -1,9 +1,21 @@
 package edu.csus.recipedb.framework.http
 
+import com.google.gson.GsonBuilder
 import java.net.HttpURLConnection
 import java.net.URL
 
 class HttpClient {
+
+    companion object {
+
+        val GSON = GsonBuilder().create()
+
+        private val client = HttpClient()
+
+        fun send(request: HttpRequest): HttpResponse {
+            return client.sendRequest(request)
+        }
+    }
 
     fun sendRequest(request: HttpRequest): HttpResponse {
         val link = "${request.url}?${getJoinedParameters(request.headers)}"

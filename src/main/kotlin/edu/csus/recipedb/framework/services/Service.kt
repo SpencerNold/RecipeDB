@@ -28,5 +28,5 @@ abstract class Service(protected val type: Type, protected val clazz: Class<*>) 
 
     @Retention(AnnotationRetention.RUNTIME)
     @Target(AnnotationTarget.CLASS)
-    annotation class Database(val driver: Driver.Type, val url: String, val username: String = "", val password: String = "")
+    annotation class Database(val driver: Driver.Type, val url: String, val permission: String = "", val username: String = "", val password: String = "")
 }

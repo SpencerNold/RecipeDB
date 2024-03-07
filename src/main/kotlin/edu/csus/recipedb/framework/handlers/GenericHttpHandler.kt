@@ -43,7 +43,7 @@ class GenericHttpHandler(private val route: Route, private val instance: Any, pr
                         val s = str.split("=")
                         parameters[s[0]] = s[1]
                     }
-                    HttpRequest(uri[0], route.method, parameters, headers, body)
+                    HttpRequest(route.method, uri[0], parameters, headers, body)
                 } else {
                     gson.fromJson(String(body), parameter.type)
                 }

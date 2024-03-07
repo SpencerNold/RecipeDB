@@ -1,7 +1,6 @@
 package edu.csus.recipedb.framework.services
 
 import edu.csus.recipedb.framework.WebServer
-import edu.csus.recipedb.framework.database.Database
 import edu.csus.recipedb.framework.database.Driver
 import edu.csus.recipedb.framework.translator.SystemPropertyTranslator
 
@@ -31,7 +30,7 @@ class DatabaseService(clazz: Class<*>, private val database: Database): Service(
         val field = edu.csus.recipedb.framework.database.Database::class.java.getDeclaredField("driver")
         field.isAccessible = true
         field.set(instance, driver)
-        driver.init()
+        (instance as edu.csus.recipedb.framework.database.Database).open()
         return instance
     }
 }
