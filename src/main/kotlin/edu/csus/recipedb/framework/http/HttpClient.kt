@@ -1,5 +1,6 @@
 package edu.csus.recipedb.framework.http
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import java.net.HttpURLConnection
 import java.net.URL
@@ -8,10 +9,16 @@ class HttpClient {
 
     companion object {
 
-        val GSON = GsonBuilder().create()
+        val GSON: Gson = GsonBuilder().create()
 
         private val client = HttpClient()
 
+        /**
+         * Sends an HttpRequest, and returns whatever is received as a response.
+         *
+         * @param request request to be sent
+         * @return response from the request
+         */
         fun send(request: HttpRequest): HttpResponse {
             return client.sendRequest(request)
         }

@@ -4,7 +4,6 @@ import edu.csus.recipedb.framework.Route
 import edu.csus.recipedb.framework.WebServer
 import edu.csus.recipedb.framework.handlers.GenericHttpHandler
 import edu.csus.recipedb.framework.handlers.StaticFileHttpHandler
-import java.io.File
 
 class ControllerService(clazz: Class<*>, private val controller: Controller): Service(Type.CONTROLLER, clazz) {
 
