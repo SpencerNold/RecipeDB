@@ -19,4 +19,12 @@ abstract class MongoDatabase: Database() {
         json = execute(json)
         return gson.fromJson(json, response)
     }
+
+    fun setAdminMode() {
+        getDriver(MongoDriver::class.java).setToAdmin()
+    }
+
+    fun setUserMode() {
+        getDriver(MongoDriver::class.java).setToLocal()
+    }
 }
