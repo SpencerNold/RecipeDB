@@ -13,4 +13,9 @@ class RootController: Implementation() {
     fun root(): InputStream? {
         return Resource.get("index.html")
     }
+
+    @Route.File(path = "/script.js")
+    fun script(): InputStream?{
+        return Resource.get("script.js")
+    }
 }
