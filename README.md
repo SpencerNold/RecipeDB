@@ -1,20 +1,31 @@
 # RecipeDB
  This is a project for CSC131 to practice using the scrum framework implementation of the agile mindset. It is a recipe database using MongoDB and the Spoonacular API.
-## Members
-Spencer Nold, Coel Miller, Pavel Bratan, Miguel Martinez, Dennis Ravlo, Igor Romantsov
-## Team Agreement
-0) ALL MEMBERS OF THE TEAM AGREE TO TRY THEIR BEST TO CONTRIBUTE EQUALLY TO THE PROJECT. EACH MEMBER RECOGNIZES THAT THEIR INDIVIDUAL
-   GRADE WILL BE WEIGHTED BASED OF PEER REVIEW FEEDBACK.
-1) All Members will follow Proper Coding Conventions.
-2) Due to other classes and jobs, members will attend as many meetings as possible.
-3) All Progress will be kept up to date in the trello (completed tasks should be marked completed within 24 hours of completion in the SJSE Trello Board)
-4) All Team members will use proper netiquette while communicating about the project.
-5) If there is any dispute for whatever reason during the project (conflicting tasks) the team will vote and majority rules. If a tie is present then the opposing
-   sides will play rock, paper, scissors.
-## Roles
-#### Product Owner:
-Coel Miller
-#### Scrum Master:
-Igor Romanstov
-#### Developers:
-Spencer Nold, Pavel Bratan, Miguel Martinez, Dennis Ravlo
+## Framework Documentation
+The framework uses services which can be classified as controllers or database connections. Controllers are for serving data to a web browser, such as html pages, or json data, as well as handling and http requests that may be made by a browser to the server. They are for handling communication between the clients and other layers. Database connections are meant to be used as the layer between the controller and the MongoDB database.
+### Using Controllers:
+To start using a controller, you need to mark a class with the `@Service.Controller` annotation.
+```kotlin
+@Service.Controller
+class RootController {
+}
+```
+Functions then can be added to the class which are tagged with the `@Route` or `@Route.File` annotations. These routes work as handlers, and accept http requests. For example:
+```kotlin
+@Route(Http.Method.GET, "/test")
+fun test() {
+}
+```
+This route will create a handler that only accepts `GET` requests at the '/test' path. You can test handlers by running the server, and accessing the routes from there. For example, with the current code in the framework, navigating to the website `http://localhost:8080/test` will call this handler. The information returned by the function will be served back to the web browser in the json format. As this function has no return type and returns `Unit`, the http response code `204` will be sent. Supported methods include `GET`, `POST`, `PUT`, and `DELETE`.
+### Frontend:
+To work with the framework for the frontend, you need to add resources to the resources folder. This can be found in the resources subfolder in the `src` folder. Adding pages to the web server can be done by adding a file, `index.html` for example, to the `src/resources` folder, then adding a corresponding route.
+
+```kotlin
+@Route.File("/")
+fun root(): InputStream? {
+    return Resource.get("index.html")
+}
+```
+With this route added to the controller, accessing `http://localhost:8080/` will result in the html page being displayed. Routes tagged with the `@Route.File` annotation can only return types `InputStream`, `InputStream?`, `File`, and `File?`.
+### Database:
+
+### Spoonacular:
