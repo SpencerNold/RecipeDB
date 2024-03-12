@@ -27,5 +27,12 @@ fun root(): InputStream? {
 ```
 With this route added to the controller, accessing `http://localhost:8080/` will result in the html page being displayed. Routes tagged with the `@Route.File` annotation can only return types `InputStream`, `InputStream?`, `File`, and `File?`.
 ### Database:
-
+Should probably be explained, rather than documented.
 ### Spoonacular:
+To communicate with spoonacular, HTTP requests will need to be used. The framework sends http requests through the `HttpClient` class with instances of `HttpRequest`. Requests follow the object-oriented builder design pattern, and requests can be sent as follows.
+
+```kotlin
+val request: HttpRequest = HttpRequest.Builder(method, url).build()
+HttpClient.send(request)
+```
+The current supported methods are the same as with controllers, and the url is where the `HttpRequest` is sent. Query parameters and headers, as well as a body to the request are possible to be added to the request Builder class as part of the design pattern.
