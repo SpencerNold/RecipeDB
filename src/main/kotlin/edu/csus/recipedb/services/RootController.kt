@@ -18,4 +18,14 @@ class RootController: Implementation() {
     fun script(): InputStream?{
         return Resource.get("script.js")
     }
+
+        @Route.File(path = "/recipe.html")
+    fun recipeHtml(): InputStream?{
+        return Resource.get("recipe.html")
+    }
+
+    @Route.File(path = "/recipe.js")
+    fun recipeJs(): InputStream?{
+        return Resource.get("recipe.js")
+    }
 }
