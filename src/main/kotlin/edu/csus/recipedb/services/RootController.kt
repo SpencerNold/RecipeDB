@@ -19,7 +19,7 @@ class RootController: Implementation() {
         return Resource.get("script.js")
     }
 
-        @Route.File(path = "/recipe.html")
+    @Route.File(path = "/recipe.html")
     fun recipeHtml(): InputStream?{
         return Resource.get("recipe.html")
     }
@@ -27,5 +27,10 @@ class RootController: Implementation() {
     @Route.File(path = "/recipe.js")
     fun recipeJs(): InputStream?{
         return Resource.get("recipe.js")
+    }
+
+    @Route.File(path = "/favorites.html")
+    fun favoritesHtml(): InputStream?{
+        return Resource.get("favorites.html")
     }
 }
