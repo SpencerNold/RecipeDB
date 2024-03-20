@@ -6,6 +6,7 @@ import com.mongodb.ServerApi
 import com.mongodb.ServerApiVersion
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
+import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import org.bson.Document
 import java.util.logging.Level
@@ -14,7 +15,6 @@ import java.util.logging.Logger
 class MongoDriver(url: String, username: String, password: String): Driver(url, username, password) {
 
     private var client: MongoClient? = null
-    private var database: MongoDatabase? = null
 
     fun init() {
         // Disable the MongoDB driver logger
@@ -27,22 +27,11 @@ class MongoDriver(url: String, username: String, password: String): Driver(url, 
         client = MongoClients.create(settings)
     }
 
-    fun setToAdmin() {
-        database = client!!.getDatabase("admin")
+    fun getDatabase(name: String): MongoDatabase? {
+        return try { client!!.getDatabase(name) } catch (e: IllegalArgumentException) { null }
     }
 
-    fun setToLocal() {
-        database = client!!.getDatabase("local")
-    }
-
-    fun isDatabaseSet(): Boolean {
-        return database != null
-    }
-
-    fun execute(statement: String): String {
-        if (!isDatabaseSet())
-            setToLocal()
-        database!!.
-        return database!!.runCommand(Document.parse(statement)).toJson()
+    fun getCollection(database: MongoDatabase, name: String): MongoCollection<Document> {
+        return database.getCollection(name)
     }
 }

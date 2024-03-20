@@ -1,54 +1,38 @@
 package edu.csus.recipedb.framework.database
 
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonElement
+import org.bson.Document
+import java.io.IOException
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.function.Supplier
 
-abstract class MongoDatabase: Database() {
 
-    private val gson = GsonBuilder().create()
+abstract class MongoDatabase(private val executor: ExecutorService = Executors.newSingleThreadExecutor()): Database() {
 
     override fun open() {
         getDriver(MongoDriver::class.java).init()
     }
 
-    /**
-     * Sends a json statement to the MongoDB driver, and returns whatever the response is as a json string.
-     *
-     * @param json a json string request
-     * @return json string response
-     */
-    protected fun execute(json: String): String {
-        return getDriver(MongoDriver::class.java).execute(json)
+    fun insert(db: String, collection: String, statement: String) {
+        val driver  = getDriver(MongoDriver::class.java)
+        val database = driver.getDatabase(db)
+        val connection = driver.getCollection(database!!, collection)
+        connection.insertOne(Document.parse(statement))
     }
 
-    /**
-     * Sends a json statement to the MongoDB driver. The request is serialized into json based on it's field names and values, and the response is deserialized the same way with the response type parameter.
-     *
-     * @param response type of class to deserialize into
-     * @param request request object being sent
-     * @return instance of the deserialized object
-     */
-    protected fun <T> execute(response: Class<T>, request: Any): T {
-        var json = gson.toJson(request)
-        json = execute(json)
-        return gson.fromJson(json, response)
+    fun insertAsync(db: String, collection: String, statement: String): CompletableFuture<Void> {
+        return CompletableFuture.runAsync( { insert(db, collection, statement) }, executor)
     }
 
-    protected fun <T> execute(response: Class<T>, request: String): T {
-        return gson.fromJson(execute(request), response)
+    fun query(db: String, collection: String, statement: String): String {
+        val driver = getDriver(MongoDriver::class.java)
+        val database = driver.getDatabase(db)
+        val connection = driver.getCollection(database!!, collection)
+        return connection.find(Document.parse(statement)).explain().toJson()
     }
 
-    /**
-     * Switches the MongoDB connection to the "admin" database
-     */
-    protected fun setAdminMode() {
-        getDriver(MongoDriver::class.java).setToAdmin()
-    }
-
-    /**
-     * Switches the MongoDB connection to the "local" database
-     */
-    protected fun setUserMode() {
-        getDriver(MongoDriver::class.java).setToLocal()
+    fun queryAsync(db: String, collection: String, statement: String): CompletableFuture<String> {
+        return CompletableFuture.supplyAsync( { query(db, collection, statement) }, executor)
     }
 }

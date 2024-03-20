@@ -8,6 +8,5 @@ import edu.csus.recipedb.framework.services.Service
 class DatabaseLayer: MongoDatabase() {
 
     fun test() {
-        // execute("db.Favoritied_Recipies.find( { \"RecipeID\": \"565545\" } )")
     }
 }
