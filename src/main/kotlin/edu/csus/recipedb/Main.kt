@@ -9,7 +9,7 @@ import java.util.concurrent.Executors
 fun main() {
     val server = WebServer.Builder(Protocol.HTTP, 8080)
         .executor(Executors.newCachedThreadPool())
-        .services(RootController::class.java, DatabaseLayer::class.java)
+        .services(DatabaseLayer::class.java, RootController::class.java)
         .build()
     server.start()
 }

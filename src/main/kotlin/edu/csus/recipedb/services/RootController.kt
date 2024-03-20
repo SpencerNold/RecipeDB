@@ -11,6 +11,7 @@ class RootController: Implementation() {
 
     @Route.File(path = "/")
     fun root(): InputStream? {
+        getService(DatabaseLayer::class.java).test()
         return Resource.get("index.html")
     }
 

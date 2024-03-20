@@ -42,6 +42,7 @@ class MongoDriver(url: String, username: String, password: String): Driver(url, 
     fun execute(statement: String): String {
         if (!isDatabaseSet())
             setToLocal()
+        database!!.
         return database!!.runCommand(Document.parse(statement)).toJson()
     }
 }

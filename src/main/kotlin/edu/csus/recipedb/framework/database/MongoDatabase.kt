@@ -1,6 +1,7 @@
 package edu.csus.recipedb.framework.database
 
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
 
 abstract class MongoDatabase: Database() {
 
@@ -16,7 +17,7 @@ abstract class MongoDatabase: Database() {
      * @param json a json string request
      * @return json string response
      */
-    fun execute(json: String): String {
+    protected fun execute(json: String): String {
         return getDriver(MongoDriver::class.java).execute(json)
     }
 
@@ -27,23 +28,27 @@ abstract class MongoDatabase: Database() {
      * @param request request object being sent
      * @return instance of the deserialized object
      */
-    fun <T> execute(response: Class<T>, request: Any): T {
+    protected fun <T> execute(response: Class<T>, request: Any): T {
         var json = gson.toJson(request)
         json = execute(json)
         return gson.fromJson(json, response)
     }
 
+    protected fun <T> execute(response: Class<T>, request: String): T {
+        return gson.fromJson(execute(request), response)
+    }
+
     /**
      * Switches the MongoDB connection to the "admin" database
      */
-    fun setAdminMode() {
+    protected fun setAdminMode() {
         getDriver(MongoDriver::class.java).setToAdmin()
     }
 
     /**
      * Switches the MongoDB connection to the "local" database
      */
-    fun setUserMode() {
+    protected fun setUserMode() {
         getDriver(MongoDriver::class.java).setToLocal()
     }
 }
