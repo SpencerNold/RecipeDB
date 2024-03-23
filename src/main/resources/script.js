@@ -20,8 +20,8 @@ async function search() {
         }
         html += `
         <div class="col-4">
-        <a href="recipe.html?name=${encodeURIComponent(recipe.title)}&id=${encodeURIComponent(recipe.id)}&image=${encodeURIComponent(recipe.image)}" class="text-decoration-none text-dark">
-        <div class="card mb-4">
+            <a href="recipe.html?name=${encodeURIComponent(recipe.title)}&id=${encodeURIComponent(recipe.id)}&image=${encodeURIComponent(recipe.image)}" class="text-decoration-none text-dark">
+                <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">${recipe.title}</h5>
                         <img src="${recipe.image}" class="img-fluid" alt="${recipe.title}">

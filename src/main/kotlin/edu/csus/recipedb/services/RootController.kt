@@ -34,4 +34,9 @@ class RootController: Implementation() {
     fun favoritesHtml(): InputStream?{
         return Resource.get("favorites.html")
     }
+    
+    @Route.File(path = "/favorites.js")
+    fun favoritesJs(): InputStream?{
+        return Resource.get("favorites.js")
+    }
 }
